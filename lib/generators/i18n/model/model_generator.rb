@@ -9,13 +9,17 @@ module I18n
       #   @return [String] name Model name
       argument :name, type: :string, banner: 'model_name'
 
+      class_option :locales, type: :array,
+        banner:  I18n.available_locales.join(' '),
+        default: I18n.available_locales
+
       # Create I18n locale files.
       def create_locale_files
         @i18n_scope = model.i18n_scope.to_s
         @i18n_key   = model.model_name.i18n_key.to_s
         @columns    = model.column_names
 
-        locales.each do |locale|
+        options[:locales].each do |locale|
           @locale = locale
           locale_file = File.join(
             'config/locales/models', model_name.underscore, "#{@locale}.yml"
@@ -40,13 +44,6 @@ module I18n
       # @return [Class] Model class
       def model
         model_name.constantize
-      end
-
-      # Return generating locale names
-      #
-      # @return [Array<Symbol|String>] Locale names
-      def locales
-        I18n.available_locales
       end
     end
   end

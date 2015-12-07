@@ -23,6 +23,27 @@ describe I18n::Generators::ModelGenerator, type: :generator do
     end
   end
 
+  # Generator should create locale files.
+  def should_create_locale_files_for(locales)
+    locales.each do |locale|
+      dest_file = file("config/locales/models/#{model_name}/#{locale}.yml")
+      expect(dest_file).to exist
+      expect(dest_file).to contain(
+        [].tap{ |content|
+          content << %(#{locale}:)
+          content << %(  #{model.i18n_scope}:)
+          content << %(    models:)
+          content << %(      #{model_name}: "#{model_name.humanize}")
+          content << %(    attributes:)
+          content << %(      #{model_name}:)
+          model.column_names.each do |column|
+            content << %(        #{column}: "#{column.humanize}")
+          end
+        }.join("\n")
+      )
+    end
+  end
+
   Given(:model) { MockModel }
   Given(:model_name) { model.model_name.i18n_key.to_s }
 
@@ -33,26 +54,16 @@ describe I18n::Generators::ModelGenerator, type: :generator do
   }
 
   context 'with declared model name parameter' do
-    When { run_generator [model_name] }
-    Then {
-      I18n.available_locales.each do |locale|
-        dest_file = file("config/locales/models/#{model_name}/#{locale}.yml")
-        expect(dest_file).to exist
-        expect(dest_file).to contain(
-          [].tap{ |content|
-            content << %(#{locale}:)
-            content << %(  #{model.i18n_scope}:)
-            content << %(    models:)
-            content << %(      #{model_name}: "#{model_name.humanize}")
-            content << %(    attributes:)
-            content << %(      #{model_name}:)
-            model.column_names.each do |column|
-              content << %(        #{column}: "#{column.humanize}")
-            end
-          }.join("\n")
-        )
-      end
-    }
+    context 'without options' do
+      When { run_generator [model_name] }
+      Then { should_create_locale_files_for I18n.available_locales }
+    end
+
+    context 'with --locales options' do
+      Given(:locales) { %w{ja en} }
+      When { run_generator [model_name, '--locales', *locales] }
+      Then { should_create_locale_files_for locales }
+    end
   end
 
   context 'with undeclared model name parameter' do
