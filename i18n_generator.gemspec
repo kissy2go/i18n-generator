@@ -1,7 +1,7 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'i18n_generator/version'
+require 'i18n_generator'
 
 Gem::Specification.new do |spec|
   spec.name          = "i18n_generator"
