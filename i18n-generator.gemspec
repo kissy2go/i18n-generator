@@ -1,10 +1,10 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'i18n_generator'
+require 'i18n-generator'
 
 Gem::Specification.new do |spec|
-  spec.name          = "i18n_generator"
+  spec.name          = "i18n-generator"
   spec.version       = I18nGenerator::VERSION
   spec.authors       = ["kissy2go"]
   spec.email         = ["kissy2go@gmail.com"]
