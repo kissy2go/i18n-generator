@@ -1,0 +1,9 @@
+<%= @locale %>:
+  <%= @i18n_scope %>:
+    models:
+      <%= @i18n_key %>: "<%= @i18n_key.humanize %>"
+    attributes:
+      <%= @i18n_key %>:
+      <%- @columns.each do |column| -%>
+        <%= column %>: "<%= column.humanize %>"
+      <%- end -%>
